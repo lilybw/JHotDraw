@@ -6,7 +6,7 @@ package org.jhotdraw.api_translation;
  *
  * @author GustavBW
  */
-public enum EGCPConstant {
+public enum EGBCConstant {
     INVALID(Integer.MIN_VALUE),
     /**
      * Specifies that this component is the next-to-last component in its column or row (gridwidth, gridheight), or that this component be placed next to the previously added component (gridx, gridy).
@@ -138,25 +138,25 @@ public enum EGCPConstant {
     BELOW_BASELINE_TRAILING(0x900);
 
     /**
-     * Returns the first matching EGCPConstant.
+     * Returns the first matching EGBCConstant.
      * Note that "REMAINDER" and "NONE" have the same integer values in the original, making it programmatically impossible to distinguish between the two.
-     * Additionally, EGCPConstant is exhaustive, including an "INVALID" option.
-     * @return the corresponding EGCPConstant or EGCPConstant.INVALID.
+     * Additionally, EGBCConstant is exhaustive, including an "INVALID" option.
+     * @return the corresponding EGBCConstant or EGBCConstant.INVALID.
      */
-    public static EGCPConstant valueOf(int val){
-        for(EGCPConstant c : EGCPConstant.values()){
+    public static EGBCConstant valueOf(int val){
+        for(EGBCConstant c : EGBCConstant.values()){
             if(c.intVal == val){
                 return c;
             }
         }
-        return EGCPConstant.INVALID;
+        return EGBCConstant.INVALID;
     }
 
     /**
      * The respective integer value used by the original GridBagConstraints class.
      */
     public final int intVal;
-    EGCPConstant(int intVal){
+    EGBCConstant(int intVal){
         this.intVal = intVal;
     }
 

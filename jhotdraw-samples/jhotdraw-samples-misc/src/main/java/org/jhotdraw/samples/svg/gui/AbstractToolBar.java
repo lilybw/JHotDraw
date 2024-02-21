@@ -14,8 +14,8 @@ import java.util.prefs.*;
 import javax.swing.*;
 import org.jhotdraw.api.app.Disposable;
 import org.jhotdraw.draw.DrawingEditor;
+import org.jhotdraw.gui.JDisclosureProperty;
 import org.jhotdraw.gui.JDisclosureToolBar;
-import static org.jhotdraw.gui.JDisclosureToolBar.DISCLOSURE_STATE_PROPERTY;
 import org.jhotdraw.util.prefs.PreferencesUtil;
 
 /**
@@ -68,7 +68,7 @@ public /*abstract*/ class AbstractToolBar extends JDisclosureToolBar implements 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     String name = evt.getPropertyName();
-                    if (name == DISCLOSURE_STATE_PROPERTY) {
+                    if (name == JDisclosureProperty.DISCLOSURE_STATE.strVal) {
                         try {
                             prefs.putInt(getID() + ".disclosureState", (Integer) evt.getNewValue());
                         } catch (IllegalStateException e) {

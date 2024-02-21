@@ -67,13 +67,13 @@ public class PaletteToolBarBorder
                         g.setPaint(lgp);
                         g.fillRect(barX + 1, barX + 1, barW - 2, barH - 2);
                         // paint the icon
-                        Icon icon = (Icon) c.getClientProperty(PaletteToolBarUI.TOOLBAR_ICON_PROPERTY);
+                        Icon icon = (Icon) c.getClientProperty(PaletteProperty.TOOLBAR_ICON_PROPERTY);
                         if (icon != null) {
                             icon.paintIcon(component, gr, barX + (barW - icon.getIconWidth()) / 2,
                                     barY + barH - 4 - icon.getIconHeight());
                         }
-                        int textIconGap = (c.getClientProperty(PaletteToolBarUI.TOOLBAR_ICON_PROPERTY) instanceof Integer)
-                                ? (Integer) c.getClientProperty(PaletteToolBarUI.TOOLBAR_ICON_PROPERTY) : 2;
+                        int textIconGap = (c.getClientProperty(PaletteProperty.TOOLBAR_ICON_PROPERTY) instanceof Integer)
+                                ? (Integer) c.getClientProperty(PaletteProperty.TOOLBAR_ICON_PROPERTY) : 2;
                         String theTitle = c.getName();
                         if (theTitle != null) {
                             FontMetrics fm = g.getFontMetrics();
@@ -134,8 +134,7 @@ public class PaletteToolBarBorder
             newInsets = new Insets(0, 0, 0, 0);
         }
         JComponent c = (JComponent) component;
-        if (c.getClientProperty(PaletteToolBarUI.TOOLBAR_INSETS_OVERRIDE_PROPERTY) instanceof Insets) {
-            Insets override = (Insets) c.getClientProperty(PaletteToolBarUI.TOOLBAR_INSETS_OVERRIDE_PROPERTY);
+        if (c.getClientProperty(PaletteProperty.TOOLBAR_INSETS_OVERRIDE_PROPERTY.strVal) instanceof Insets override) {
             newInsets.top = override.top;
             newInsets.left = override.left;
             newInsets.bottom = override.bottom;
