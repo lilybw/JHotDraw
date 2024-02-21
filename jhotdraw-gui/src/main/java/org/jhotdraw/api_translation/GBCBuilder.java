@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class GBCBuilder implements IGBCBuilder {
 
-    private Insets insets = new Insets(0,0,0,0);
+    private Insets insets = new Insets(0, 0, 0, 0);
     private EGBCConstant anchor = EGBCConstant.CENTER;
     private EGBCConstant fill = EGBCConstant.NONE;
     private EGBCConstant gridX = EGBCConstant.RELATIVE;
@@ -59,7 +59,7 @@ public class GBCBuilder implements IGBCBuilder {
 
     @Override
     public IGBCBuilder setInsets(int top, int left, int bottom, int right) {
-        this.insets = new Insets(top,left,bottom,right);
+        this.insets = new Insets(top, left, bottom, right);
         return this;
     }
 

@@ -2,9 +2,6 @@ package org.jhotdraw.api_translation;
 
 import javax.swing.*;
 import javax.swing.plaf.ButtonUI;
-import javax.swing.plaf.ComponentUI;
-
-import org.jhotdraw.gui.plaf.palette.PaletteButtonUI;
 
 import java.awt.event.ActionListener;
 

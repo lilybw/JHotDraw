@@ -24,8 +24,8 @@ public enum PaletteProperty {
 
 
     public static PaletteProperty strValueOf(String string){
-        for(PaletteProperty property : values()){
-            if(string.equals(property.strVal)){
+        for (PaletteProperty property : values()){
+            if (string.equals(property.strVal)){
                 return property;
             }
         }

@@ -144,8 +144,8 @@ public enum EGBCConstant {
      * @return the corresponding EGBCConstant or EGBCConstant.INVALID.
      */
     public static EGBCConstant valueOf(int val){
-        for(EGBCConstant c : EGBCConstant.values()){
-            if(c.intVal == val){
+        for (EGBCConstant c : EGBCConstant.values()){
+            if (c.intVal == val){
                 return c;
             }
         }

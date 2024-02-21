@@ -45,7 +45,7 @@ public class PaletteToolBarBorder
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        if ((component instanceof JToolBar) && ((((JToolBar) component).getUI()) instanceof PaletteToolBarUI)) {
+        if ((component instanceof JToolBar) && ((((JToolBar) component).getUI()) instanceof IPaletteToolBarUI)) {
             JToolBar c = (JToolBar) component;
             if (c.isFloatable()) {
                 int hx = x, hy = y, hw = w, hh = h;

@@ -2,11 +2,9 @@ package org.jhotdraw.api_translation;
 
 import javax.swing.*;
 import javax.swing.plaf.ButtonUI;
-import javax.swing.plaf.ComponentUI;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Use this class for configuration of new instances of JButton.
@@ -30,20 +28,20 @@ public class JButtonBuilder implements IJButtonBuilder {
     @Override
     public JButton build() {
         JButton btn = new JButton();
-        for(KVProperty kvPair : properties){
+        for (KVProperty kvPair : properties){
             btn.putClientProperty(
                     kvPair.key(), kvPair.value()
             );
         }
-        for(ActionListener listener : listeners){
+        for (ActionListener listener : listeners){
             btn.addActionListener(listener);
         }
         btn.setOpaque(isOpaque);
         btn.setBorderPainted(isBorderPainted);
-        if(icon != null){
+        if (icon != null){
             btn.setIcon(icon);
         }
-        if(ui != null){
+        if (ui != null){
             btn.setUI(ui);
         }
         return btn;
@@ -82,10 +80,12 @@ public class JButtonBuilder implements IJButtonBuilder {
     @Override
     public IJButtonBuilder addProperties(Object... keyValuePairs) {
         //Guard statement. The only case where the code below will fail.
-        if(keyValuePairs.length < 2) return this;
+        if (keyValuePairs.length < 2) {
+            return this;
+        }
 
         //Implicitly ignores the last element for an array of uneven length.
-        for(int i = 0; i < keyValuePairs.length - 1; i += 2){
+        for (int i = 0; i < keyValuePairs.length - 1; i += 2){
             properties.add(new KVProperty(keyValuePairs[i], keyValuePairs[i + 1]));
         }
         return this;

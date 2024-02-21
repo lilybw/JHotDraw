@@ -39,7 +39,7 @@ public class JDisclosureToolBar extends JToolBar {
 
     private void initComponents() {
         setLayout(new GridBagLayout());
-        if(disclosureButton == null) {
+        if (disclosureButton == null) {
             disclosureButton = createDisclosureButton();
         }
         add(disclosureButton, createConstraintsForDisclosureButton());
@@ -54,10 +54,10 @@ public class JDisclosureToolBar extends JToolBar {
     private GridBagConstraints createConstraintsForDisclosureButton(){
         return new GBCBuilder()
                 .setGridX(EGBCConstant.NONE)
-                .setInsets(0,1,0,1)
+                .setInsets(0, 1, 0, 1)
                 .setAnchor(EGBCConstant.SOUTHWEST)
                 .setFillType(EGBCConstant.NONE)
-                .setWeights(1,1)
+                .setWeights(1, 1)
                 .build();
     }
 
@@ -90,7 +90,7 @@ public class JDisclosureToolBar extends JToolBar {
         disclosureButton.putClientProperty(DisclosureIcon.CURRENT_STATE_PROPERTY, newValue);
         removeAll();
         JComponent disclosedComponent = getDisclosedComponent(newValue);
-        if(disclosedComponent != null){
+        if (disclosedComponent != null){
             add(disclosedComponent, getConstraintForDisclosedComponents());
         }
         add(disclosureButton, getButtonConstraints(disclosedComponent != null));
@@ -103,10 +103,10 @@ public class JDisclosureToolBar extends JToolBar {
                 .setFillType(EGBCConstant.NONE)
                 .setAnchor(EGBCConstant.SOUTHWEST)
                 .setInsets(0, 1, 0, 1);
-        if(disclosedComponentExists){
+        if (disclosedComponentExists){
             builder.setGridX(EGBCConstant.BOTH)
                     .setWeights(1, 1);
-        }else{
+        }else {
             builder.setGridX(EGBCConstant.NONE)
                     .setWeights(0 , 1);
         }

@@ -7,44 +7,41 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class PaletteHandler implements ContainerListener,
+class PaletteHandler implements ContainerListener,
         FocusListener, MouseInputListener, PropertyChangeListener {
 
-    private final PaletteToolBarUI paletteToolBarUI;
+    private final IPaletteToolBarUI palette;
 
-    public PaletteHandler(PaletteToolBarUI paletteToolBarUI) {
-        this.paletteToolBarUI = paletteToolBarUI;
+    public PaletteHandler(IPaletteToolBarUI paletteToolBarUI) {
+        this.palette = paletteToolBarUI;
     }
 
     // ContainerListener
     @Override
     public void componentAdded(ContainerEvent evt) {
         Component c = evt.getChild();
-        if (paletteToolBarUI.toolBarFocusListener != null) {
-            c.addFocusListener(paletteToolBarUI.toolBarFocusListener);
-        }
-        if (paletteToolBarUI.isRolloverBorders()) {
-            paletteToolBarUI.setBorderToRollover(c);
+        c.addFocusListener(this);
+
+        if (palette.isRolloverBorders()) {
+            palette.setBorderToRollover(c);
         } else {
-            paletteToolBarUI.setBorderToNonRollover(c);
+            palette.setBorderToNonRollover(c);
         }
     }
 
     @Override
     public void componentRemoved(ContainerEvent evt) {
         Component c = evt.getChild();
-        if (paletteToolBarUI.toolBarFocusListener != null) {
-            c.removeFocusListener(paletteToolBarUI.toolBarFocusListener);
-        }
+        c.removeFocusListener(this);
         // Revert the button border
-        paletteToolBarUI.setBorderToNormal(c);
+        palette.setBorderToNormal(c);
     }
 
     // FocusListener
     @Override
     public void focusGained(FocusEvent evt) {
         Component c = evt.getComponent();
-        paletteToolBarUI.focusedCompIndex = paletteToolBarUI.toolBar.getComponentIndex(c);
+        palette.setFocusedCompIndex(toolBar.getComponentIndex(c));
     }
 
     @Override
@@ -56,7 +53,6 @@ public class PaletteHandler implements ContainerListener,
     private boolean isDragging = false;
     private Point origin = null;
     private boolean isArmed = false;
-
 
 
     @Override
@@ -83,12 +79,12 @@ public class PaletteHandler implements ContainerListener,
         if (!toolBar.isEnabled()) {
             return;
         }
-        if (isDragging == true) {
+        if (isDragging) {
             Point position = evt.getPoint();
             if (origin == null) {
                 origin = evt.getComponent().getLocationOnScreen();
             }
-            paletteToolBarUI.floatAt(position, origin);
+            palette.floatAt(position, origin);
         }
         origin = null;
         isDragging = false;
@@ -107,7 +103,7 @@ public class PaletteHandler implements ContainerListener,
         if (origin == null) {
             origin = evt.getComponent().getLocationOnScreen();
         }
-        paletteToolBarUI.dragTo(position, origin);
+        palette.dragTo(position, origin);
     }
 
     @Override
@@ -124,16 +120,16 @@ public class PaletteHandler implements ContainerListener,
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
         if ("lookAndFeel".equals(propertyName)) {
-            paletteToolBarUI.toolBar.updateUI();
+            toolBar.updateUI();
         } else if ("orientation".equals(propertyName)) {
             // Search for JSeparator components and change it's orientation
             // to match the toolbar and flip it's orientation.
-            Component[] components = paletteToolBarUI.toolBar.getComponents();
+            Component[] components = toolBar.getComponents();
             int orientation = ((Integer) evt.getNewValue());
             JToolBar.Separator separator;
-            for (int i = 0; i < components.length; ++i) {
-                if (components[i] instanceof JToolBar.Separator) {
-                    separator = (JToolBar.Separator) components[i];
+            for (Component component : components) {
+                if (component instanceof JToolBar.Separator) {
+                    separator = (JToolBar.Separator) component;
                     if ((orientation == JToolBar.HORIZONTAL)) {
                         separator.setOrientation(JSeparator.VERTICAL);
                     } else {
@@ -148,9 +144,9 @@ public class PaletteHandler implements ContainerListener,
                     }
                 }
             }
-        } else if ((propertyName == null && PaletteProperty.IS_ROLLOVER == null) || (propertyName != null && propertyName.equals(PaletteProperty.IS_ROLLOVER))) {
-            paletteToolBarUI.installNormalBorders(paletteToolBarUI.toolBar);
-            paletteToolBarUI.setRolloverBorders(((Boolean) evt.getNewValue()));
+        } else if ((propertyName == null && PaletteProperty.IS_ROLLOVER == null) || (propertyName != null && propertyName.equals(PaletteProperty.IS_ROLLOVER.strVal))) {
+            palette.installNormalBorders(toolBar);
+            palette.setRolloverBorders(((Boolean) evt.getNewValue()));
         }
     }
 

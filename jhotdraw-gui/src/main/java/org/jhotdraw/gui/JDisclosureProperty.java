@@ -12,8 +12,8 @@ public enum JDisclosureProperty {
      * @return the corresponding property or INVALID.
      */
     public static JDisclosureProperty strValueOf(String string){
-        for(JDisclosureProperty property : values()){
-            if(property.strVal.equals(string)){
+        for (JDisclosureProperty property : values()){
+            if (property.strVal.equals(string)){
                 return  property;
             }
         }
