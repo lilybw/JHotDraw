@@ -11,6 +11,7 @@ import java.awt.*;
  */
 public class GBCBuilder implements IGBCBuilder {
 
+    //These default values are the same as the default values in GridBagConstraints
     private Insets insets = new Insets(0, 0, 0, 0);
     private EGBCConstant anchor = EGBCConstant.CENTER;
     private EGBCConstant fill = EGBCConstant.NONE;
@@ -52,12 +53,6 @@ public class GBCBuilder implements IGBCBuilder {
     }
 
     @Override
-    public IGBCBuilder setInsets(Insets insets) {
-        this.insets = insets;
-        return this;
-    }
-
-    @Override
     public IGBCBuilder setInsets(int top, int left, int bottom, int right) {
         this.insets = new Insets(top, left, bottom, right);
         return this;
@@ -77,8 +72,8 @@ public class GBCBuilder implements IGBCBuilder {
 
     @Override
     public IGBCBuilder setWeights(double x, double y) {
-        this.weightX = x;
-        this.weightY = y;
+        setWeightX(x);
+        setWeightY(y);
         return this;
     }
 

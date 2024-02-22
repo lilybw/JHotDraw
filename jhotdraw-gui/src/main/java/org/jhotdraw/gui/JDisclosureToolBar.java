@@ -124,13 +124,16 @@ public class JDisclosureToolBar extends JToolBar {
 
     private void invalidateAndRepaint() {
         invalidate();
-        seekRootParent().validate();
+        Container parent = seekRootParent();
+        if(parent != null){
+            parent.validate();
+        }
         repaint();
     }
 
     private Container seekRootParent() {
         Container parent = getParent();
-        while (parent.getParent() != null && !parent.getParent().isValid()) {
+        while (parent != null && !parent.getParent().isValid()) {
             parent = parent.getParent();
         }
         return parent;

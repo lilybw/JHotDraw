@@ -410,27 +410,27 @@ public class PaletteToolBarUI extends ToolBarUI implements IPaletteToolBarUI {
      * Sets the border of the component to have a rollover border which
      * was created by <code>createRolloverBorder</code>.
      *
-     * @param c component which will have a rollover border installed
+     * @param comp component which will have a rollover border installed
      * @see #createRolloverBorder
      * @since 1.4
      */
-    public void setBorderToRollover(Component c) {
+    public void setBorderToRollover(Component comp) {
         if (true) {
             return;
         }
-        if (c instanceof AbstractButton) {
-            AbstractButton b = (AbstractButton) c;
-            Border border = borderTable.get(b);
-            if (border == null || border instanceof UIResource) {
-                borderTable.put(b, b.getBorder());
-            }
-            // Only set the border if its the default border
-            if (b.getBorder() instanceof UIResource) {
-                b.setBorder(getRolloverBorder(b));
-            }
-            rolloverTable.put(b, b.isRolloverEnabled());
-            b.setRolloverEnabled(true);
+        if (!(comp instanceof AbstractButton btn)) {
+            return;
         }
+        Border border = borderTable.get(btn);
+        if (border == null || border instanceof UIResource) {
+            borderTable.put(btn, btn.getBorder());
+        }
+        // Only set the border if its the default border
+        if (btn.getBorder() instanceof UIResource) {
+            btn.setBorder(getRolloverBorder(btn));
+        }
+        rolloverTable.put(btn, btn.isRolloverEnabled());
+        btn.setRolloverEnabled(true);
     }
 
     private Border getRolloverBorder(AbstractButton b) {
@@ -454,23 +454,24 @@ public class PaletteToolBarUI extends ToolBarUI implements IPaletteToolBarUI {
         if (true) {
             return;
         }
-        if (c instanceof AbstractButton) {
-            AbstractButton b = (AbstractButton) c;
-            Border border = borderTable.get(b);
-            if (border == null || border instanceof UIResource) {
-                borderTable.put(b, b.getBorder());
-            }
-            // Only set the border if its the default border
-            if (b.getBorder() instanceof UIResource) {
-                if (b instanceof JToggleButton) {
-                    ((JToggleButton) b).setBorder(nonRolloverToggleBorder);
-                } else {
-                    b.setBorder(nonRolloverBorder);
-                }
-            }
-            rolloverTable.put(b, b.isRolloverEnabled() ? Boolean.TRUE : Boolean.FALSE);
-            b.setRolloverEnabled(false);
+        if (!(c instanceof AbstractButton)) {
+            return;
         }
+        AbstractButton b = (AbstractButton) c;
+        Border border = borderTable.get(b);
+        if (border == null || border instanceof UIResource) {
+            borderTable.put(b, b.getBorder());
+        }
+        // Only set the border if its the default border
+        if (b.getBorder() instanceof UIResource) {
+            if (b instanceof JToggleButton) {
+                ((JToggleButton) b).setBorder(nonRolloverToggleBorder);
+            } else {
+                b.setBorder(nonRolloverBorder);
+            }
+        }
+        rolloverTable.put(b, b.isRolloverEnabled() ? Boolean.TRUE : Boolean.FALSE);
+        b.setRolloverEnabled(false);
     }
 
     /**
@@ -486,14 +487,15 @@ public class PaletteToolBarUI extends ToolBarUI implements IPaletteToolBarUI {
         if (true) {
             return;
         }
-        if (c instanceof AbstractButton) {
-            AbstractButton b = (AbstractButton) c;
-            Border border = borderTable.remove(b);
-            b.setBorder(border);
-            Boolean value = rolloverTable.remove(b);
-            if (value != null) {
-                b.setRolloverEnabled(value);
-            }
+        if (!(c instanceof AbstractButton)) {
+            return;
+        }
+        AbstractButton b = (AbstractButton) c;
+        Border border = borderTable.remove(b);
+        b.setBorder(border);
+        Boolean value = rolloverTable.remove(b);
+        if (value != null) {
+            b.setRolloverEnabled(value);
         }
     }
 
@@ -507,72 +509,74 @@ public class PaletteToolBarUI extends ToolBarUI implements IPaletteToolBarUI {
     }
 
     public void setFloating(boolean b, Point p) {
-        if (toolBar.isFloatable()) {
-            if (dragWindow != null) {
-                dragWindow.setVisible(false);
-            }
-            if (this.floating && IS_FLOATING_ALLOWED) {
-                if (dockingSource == null) {
-                    dockingSource = toolBar.getParent();
-                    dockingSource.remove(toolBar);
-                }
-                constraintBeforeFloating = calculateConstraint();
-                if (handler != null) {
-                    UIManager.addPropertyChangeListener(handler);
-                }
-                if (floatingToolBar == null) {
-                    floatingToolBar = createFloatingWindow(toolBar);
-                }
-                floatingToolBar.getContentPane().add(toolBar, BorderLayout.CENTER);
-                if (floatingToolBar instanceof Window) {
-                    ((Window) floatingToolBar).pack();
-                }
-                if (floatingToolBar instanceof Window) {
-                    ((Window) floatingToolBar).setLocation(floatingX, floatingY);
-                }
-                if (floatingToolBar instanceof Window) {
-                    ((Window) floatingToolBar).setVisible(true);
-                }
-            } else {
-                if (floatingToolBar == null) {
-                    floatingToolBar = createFloatingWindow(toolBar);
-                }
-                if (floatingToolBar instanceof Window) {
-                    ((Window) floatingToolBar).setVisible(false);
-                }
-                floatingToolBar.getContentPane().remove(toolBar);
-                Integer constraint = getDockingConstraint(dockingSource,
-                        p);
-                if (constraint == null) {
-                    constraint = 0;
-                }
-                int orientation = mapConstraintToOrientation(constraint);
-                setOrientation(orientation);
-                if (dockingSource == null) {
-                    dockingSource = toolBar.getParent();
-                }
-                if (handler != null) {
-                    UIManager.removePropertyChangeListener(handler);
-                }
-                dockingSource.add(toolBar, constraint.intValue());
-            }
-            dockingSource.invalidate();
-            Container dockingSourceParent = dockingSource.getParent();
-            if (dockingSourceParent != null) {
-                dockingSourceParent.validate();
-            }
-            dockingSource.repaint();
+        if (!toolBar.isFloatable()) {
+            return;
         }
+        if (dragWindow != null) {
+            dragWindow.setVisible(false);
+        }
+        if (this.floating && IS_FLOATING_ALLOWED) {
+            if (dockingSource == null) {
+                dockingSource = toolBar.getParent();
+                dockingSource.remove(toolBar);
+            }
+            constraintBeforeFloating = calculateConstraint();
+            if (handler != null) {
+                UIManager.addPropertyChangeListener(handler);
+            }
+            if (floatingToolBar == null) {
+                floatingToolBar = createFloatingWindow(toolBar);
+            }
+            floatingToolBar.getContentPane().add(toolBar, BorderLayout.CENTER);
+            if (floatingToolBar instanceof Window) {
+                ((Window) floatingToolBar).pack();
+            }
+            if (floatingToolBar instanceof Window) {
+                ((Window) floatingToolBar).setLocation(floatingX, floatingY);
+            }
+            if (floatingToolBar instanceof Window) {
+                ((Window) floatingToolBar).setVisible(true);
+            }
+        } else {
+            if (floatingToolBar == null) {
+                floatingToolBar = createFloatingWindow(toolBar);
+            }
+            if (floatingToolBar instanceof Window) {
+                ((Window) floatingToolBar).setVisible(false);
+            }
+            floatingToolBar.getContentPane().remove(toolBar);
+            Integer constraint = getDockingConstraint(dockingSource,
+                    p);
+            if (constraint == null) {
+                constraint = 0;
+            }
+            int orientation = mapConstraintToOrientation(constraint);
+            setOrientation(orientation);
+            if (dockingSource == null) {
+                dockingSource = toolBar.getParent();
+            }
+            if (handler != null) {
+                UIManager.removePropertyChangeListener(handler);
+            }
+            dockingSource.add(toolBar, constraint.intValue());
+        }
+        dockingSource.invalidate();
+        Container dockingSourceParent = dockingSource.getParent();
+        if (dockingSourceParent != null) {
+            dockingSourceParent.validate();
+        }
+        dockingSource.repaint();
     }
 
     private int mapConstraintToOrientation(Object constraint) {
         int orientation = toolBar.getOrientation();
-        if (constraint != null) {
-            if (constraint.equals(BorderLayout.EAST) || constraint.equals(BorderLayout.WEST)) {
-                orientation = JToolBar.VERTICAL;
-            } else if (constraint.equals(BorderLayout.NORTH) || constraint.equals(BorderLayout.SOUTH)) {
-                orientation = JToolBar.HORIZONTAL;
-            }
+        if (constraint == null) {
+            return orientation;
+        }
+        if (constraint.equals(BorderLayout.EAST) || constraint.equals(BorderLayout.WEST)) {
+            orientation = JToolBar.VERTICAL;
+        } else if (constraint.equals(BorderLayout.NORTH) || constraint.equals(BorderLayout.SOUTH)) {
+            orientation = JToolBar.HORIZONTAL;
         }
         return orientation;
     }
@@ -634,99 +638,101 @@ public class PaletteToolBarUI extends ToolBarUI implements IPaletteToolBarUI {
         if (p == null) {
             return constraintBeforeFloating;
         }
-        if (c.contains(p)) {
-            for (int i = 0, n = dockingSource.getComponentCount(); i < n; i++) {
-                Component child = dockingSource.getComponent(i);
-                Point childP = new Point(p.x - child.getX(), p.y - child.getY());
-                if (child.contains(childP)) {
-                    return Math.min(n - 1, (childP.x <= child.getWidth()) ? i : i + 1);
-                }
-            }
-            if (dockingSource.getComponentCount() == 0
-                    || p.x < dockingSource.getComponent(0).getX()) {
-                return 0;
-            }
-            return dockingSource.getComponentCount() - 1;
+        if (!c.contains(p)) {
+            return null;
         }
-        return null;
+        for (int i = 0, n = dockingSource.getComponentCount(); i < n; i++) {
+            Component child = dockingSource.getComponent(i);
+            Point childP = new Point(p.x - child.getX(), p.y - child.getY());
+            if (child.contains(childP)) {
+                return Math.min(n - 1, (childP.x <= child.getWidth()) ? i : i + 1);
+            }
+        }
+        if (dockingSource.getComponentCount() == 0
+                || p.x < dockingSource.getComponent(0).getX()) {
+            return 0;
+        }
+        return dockingSource.getComponentCount() - 1;
     }
 
     public void dragTo(Point position, Point origin) {
-        if (toolBar.isFloatable() == true) {
-            try {
-                if (dragWindow == null) {
-                    dragWindow = createDragWindow(toolBar);
-                }
-                Point offset = dragWindow.getOffset();
-                if (offset == null) {
-                    //Dimension size = toolBar.getPreferredSize();
-                    Dimension size = toolBar.getSize();
-                    offset = new Point(size.width / 2, size.height / 2);
-                    dragWindow.setOffset(offset);
-                }
-                Point global = new Point(origin.x + position.x,
-                        origin.y + position.y);
-                Point dragPoint = new Point(global.x - offset.x,
-                        global.y - offset.y);
-                if (dockingSource == null) {
-                    dockingSource = toolBar.getParent();
-                }
-                constraintBeforeFloating = calculateConstraint();
-                Point dockingPosition = dockingSource.getLocationOnScreen();
-                Point comparisonPoint = new Point(global.x - dockingPosition.x,
-                        global.y - dockingPosition.y);
-                if (canDock(dockingSource, comparisonPoint)) {
-                    dragWindow.setBackground(getDockingColor());
-                    Object constraint = getDockingConstraint(dockingSource,
-                            comparisonPoint);
-                    int orientation = mapConstraintToOrientation(constraint);
-                    dragWindow.setOrientation(orientation);
-                    dragWindow.setBorderColor(colorManager.getDockingBorderColor());
-                } else {
-                    dragWindow.setBackground(getFloatingColor());
-                    dragWindow.setBorderColor(colorManager.getFloatingBorderColor());
-                }
-                dragWindow.setLocation(dragPoint.x, dragPoint.y);
-                if (dragWindow.isVisible() == false) {
-                    //Dimension size = toolBar.getPreferredSize();
-                    Dimension size = toolBar.getSize();
-                    dragWindow.setSize(size.width, size.height);
-                    dragWindow.setVisible(true);
-                }
-            } catch (IllegalComponentStateException e) {
-                // allowed empty
+        if (!toolBar.isFloatable()) {
+            return;
+        }
+        try {
+            if (dragWindow == null) {
+                dragWindow = createDragWindow(toolBar);
             }
+            Point offset = dragWindow.getOffset();
+            if (offset == null) {
+                //Dimension size = toolBar.getPreferredSize();
+                Dimension size = toolBar.getSize();
+                offset = new Point(size.width / 2, size.height / 2);
+                dragWindow.setOffset(offset);
+            }
+            Point global = new Point(origin.x + position.x,
+                    origin.y + position.y);
+            Point dragPoint = new Point(global.x - offset.x,
+                    global.y - offset.y);
+            if (dockingSource == null) {
+                dockingSource = toolBar.getParent();
+            }
+            constraintBeforeFloating = calculateConstraint();
+            Point dockingPosition = dockingSource.getLocationOnScreen();
+            Point comparisonPoint = new Point(global.x - dockingPosition.x,
+                    global.y - dockingPosition.y);
+            if (canDock(dockingSource, comparisonPoint)) {
+                dragWindow.setBackground(getDockingColor());
+                Object constraint = getDockingConstraint(dockingSource,
+                        comparisonPoint);
+                int orientation = mapConstraintToOrientation(constraint);
+                dragWindow.setOrientation(orientation);
+                dragWindow.setBorderColor(colorManager.getDockingBorderColor());
+            } else {
+                dragWindow.setBackground(getFloatingColor());
+                dragWindow.setBorderColor(colorManager.getFloatingBorderColor());
+            }
+            dragWindow.setLocation(dragPoint.x, dragPoint.y);
+            if (dragWindow.isVisible() == false) {
+                //Dimension size = toolBar.getPreferredSize();
+                Dimension size = toolBar.getSize();
+                dragWindow.setSize(size.width, size.height);
+                dragWindow.setVisible(true);
+            }
+        } catch (IllegalComponentStateException e) {
+            // allowed empty
         }
     }
 
     public void floatAt(Point position, Point origin) {
-        if (toolBar.isFloatable() == true) {
-            try {
-                Point offset = dragWindow.getOffset();
-                if (offset == null) {
-                    offset = position;
-                    dragWindow.setOffset(offset);
-                }
-                Point global = new Point(origin.x + position.x,
-                        origin.y + position.y);
-                setFloatingLocation(global.x - offset.x,
-                        global.y - offset.y);
-                if (dockingSource != null) {
-                    Point dockingPosition = dockingSource.getLocationOnScreen();
-                    Point comparisonPoint = new Point(global.x - dockingPosition.x,
-                            global.y - dockingPosition.y);
-                    if (canDock(dockingSource, comparisonPoint)) {
-                        setFloating(false, comparisonPoint);
-                    } else {
-                        setFloating(true, null);
-                    }
+        if (!toolBar.isFloatable()) {
+            return;
+        }
+        try {
+            Point offset = dragWindow.getOffset();
+            if (offset == null) {
+                offset = position;
+                dragWindow.setOffset(offset);
+            }
+            Point global = new Point(origin.x + position.x,
+                    origin.y + position.y);
+            setFloatingLocation(global.x - offset.x,
+                    global.y - offset.y);
+            if (dockingSource != null) {
+                Point dockingPosition = dockingSource.getLocationOnScreen();
+                Point comparisonPoint = new Point(global.x - dockingPosition.x,
+                        global.y - dockingPosition.y);
+                if (canDock(dockingSource, comparisonPoint)) {
+                    setFloating(false, comparisonPoint);
                 } else {
                     setFloating(true, null);
                 }
-                dragWindow.setOffset(null);
-            } catch (IllegalComponentStateException e) {
-                // allowed empty
+            } else {
+                setFloating(true, null);
             }
+            dragWindow.setOffset(null);
+        } catch (IllegalComponentStateException ignored) {
+            // allowed empty
         }
     }
 
@@ -746,33 +752,34 @@ public class PaletteToolBarUI extends ToolBarUI implements IPaletteToolBarUI {
         return new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent w) {
-                if (toolBar.isFloatable() == true) {
-                    if (dragWindow != null) {
-                        dragWindow.setVisible(false);
-                    }
-                    floating = false;
-                    if (floatingToolBar == null) {
-                        floatingToolBar = createFloatingWindow(toolBar);
-                    }
-                    if (floatingToolBar instanceof Window) {
-                        ((Window) floatingToolBar).setVisible(false);
-                    }
-                    floatingToolBar.getContentPane().remove(toolBar);
-                    Integer constraint = constraintBeforeFloating;
-                    if (dockingSource == null) {
-                        dockingSource = toolBar.getParent();
-                    }
-                    if (handler != null) {
-                        UIManager.removePropertyChangeListener(handler);
-                    }
-                    dockingSource.add(toolBar, constraint.intValue());
-                    dockingSource.invalidate();
-                    Container dockingSourceParent = dockingSource.getParent();
-                    if (dockingSourceParent != null) {
-                        dockingSourceParent.validate();
-                    }
-                    dockingSource.repaint();
+                if (!toolBar.isFloatable()) {
+                    return;
                 }
+                if (dragWindow != null) {
+                    dragWindow.setVisible(false);
+                }
+                floating = false;
+                if (floatingToolBar == null) {
+                    floatingToolBar = createFloatingWindow(toolBar);
+                }
+                if (floatingToolBar instanceof Window) {
+                    ((Window) floatingToolBar).setVisible(false);
+                }
+                floatingToolBar.getContentPane().remove(toolBar);
+                Integer constraint = constraintBeforeFloating;
+                if (dockingSource == null) {
+                    dockingSource = toolBar.getParent();
+                }
+                if (handler != null) {
+                    UIManager.removePropertyChangeListener(handler);
+                }
+                dockingSource.add(toolBar, constraint.intValue());
+                dockingSource.invalidate();
+                Container dockingSourceParent = dockingSource.getParent();
+                if (dockingSourceParent != null) {
+                    dockingSourceParent.validate();
+                }
+                dockingSource.repaint();
             }
         };
     }

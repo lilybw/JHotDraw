@@ -7,10 +7,14 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-class PaletteHandler implements ContainerListener,
+public class PaletteHandler implements ContainerListener,
         FocusListener, MouseInputListener, PropertyChangeListener {
 
     private final IPaletteToolBarUI palette;
+    private JToolBar toolBar;
+    private boolean isDragging = false;
+    private Point origin = null;
+    private boolean isArmed = false;
 
     public PaletteHandler(IPaletteToolBarUI paletteToolBarUI) {
         this.palette = paletteToolBarUI;
@@ -48,12 +52,6 @@ class PaletteHandler implements ContainerListener,
     public void focusLost(FocusEvent evt) {
     }
 
-    // MouseInputListener (DockingListener)
-    private JToolBar toolBar;
-    private boolean isDragging = false;
-    private Point origin = null;
-    private boolean isArmed = false;
-
 
     @Override
     public void mousePressed(MouseEvent evt) {
@@ -62,16 +60,20 @@ class PaletteHandler implements ContainerListener,
         }
         isDragging = false;
         if (evt.getSource() instanceof JToolBar) {
-            JComponent c = (JComponent) evt.getSource();
+            JComponent source = (JComponent) evt.getSource();
             Insets insets;
-            if (c.getBorder() instanceof PaletteToolBarBorder) {
-                insets = ((PaletteToolBarBorder) c.getBorder()).getDragInsets(c);
+            if (source.getBorder() instanceof PaletteToolBarBorder) {
+                insets = ((PaletteToolBarBorder) source.getBorder()).getDragInsets(source);
             } else {
-                insets = c.getInsets();
+                insets = source.getInsets();
             }
-            isArmed = !(evt.getX() > insets.left && evt.getX() < c.getWidth() - insets.right
-                    && evt.getY() > insets.top && evt.getY() < c.getHeight() - insets.bottom);
+            isArmed = isClickOutsideBounds(evt, insets, source);
         }
+    }
+
+    private boolean isClickOutsideBounds(MouseEvent evt, Insets insets, JComponent source){
+        return (evt.getX() <= insets.left) || (evt.getX() >= (source.getWidth() - insets.right))
+                || (evt.getY() <= insets.top) || (evt.getY() >= (source.getHeight() - insets.bottom));
     }
 
     @Override
@@ -121,36 +123,47 @@ class PaletteHandler implements ContainerListener,
         String propertyName = evt.getPropertyName();
         if ("lookAndFeel".equals(propertyName)) {
             toolBar.updateUI();
-        } else if ("orientation".equals(propertyName)) {
+            return;
+        }
+        if ("orientation".equals(propertyName)) {
             // Search for JSeparator components and change it's orientation
             // to match the toolbar and flip it's orientation.
             Component[] components = toolBar.getComponents();
             int orientation = ((Integer) evt.getNewValue());
-            JToolBar.Separator separator;
-            for (Component component : components) {
-                if (component instanceof JToolBar.Separator) {
-                    separator = (JToolBar.Separator) component;
-                    if ((orientation == JToolBar.HORIZONTAL)) {
-                        separator.setOrientation(JSeparator.VERTICAL);
-                    } else {
-                        separator.setOrientation(JSeparator.HORIZONTAL);
-                    }
-                    Dimension size = separator.getSeparatorSize();
-                    if (size != null && size.width != size.height) {
-                        // Flip the orientation.
-                        Dimension newSize
-                                = new Dimension(size.height, size.width);
-                        separator.setSeparatorSize(newSize);
-                    }
-                }
-            }
+            evaluateComponentSizeAndOrientation(components, orientation);
         } else if ((propertyName == null && PaletteProperty.IS_ROLLOVER == null) || (propertyName != null && propertyName.equals(PaletteProperty.IS_ROLLOVER.strVal))) {
             palette.installNormalBorders(toolBar);
             palette.setRolloverBorders(((Boolean) evt.getNewValue()));
         }
     }
 
+    private void evaluateComponentSizeAndOrientation(Component[] components, int orientation) {
+        for (Component component : components) {
+            if (!(component instanceof JToolBar.Separator separator)) {
+                continue;
+            }
+            if ((orientation == JToolBar.HORIZONTAL)) {
+                separator.setOrientation(JSeparator.VERTICAL);
+            } else {
+                separator.setOrientation(JSeparator.HORIZONTAL);
+            }
+            Dimension size = separator.getSeparatorSize();
+            if (size != null && size.width != size.height) {
+                // Flip the orientation.
+                Dimension newSize
+                        = new Dimension(size.height, size.width);
+                separator.setSeparatorSize(newSize);
+            }
+        }
+    }
+
     public void setToolBar(JToolBar toolBar){
         this.toolBar = toolBar;
+    }
+    public boolean isArmed(){
+        return isArmed;
+    }
+    public boolean isDragging(){
+        return isDragging;
     }
 }

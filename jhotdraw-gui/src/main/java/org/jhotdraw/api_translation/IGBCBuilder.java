@@ -14,7 +14,6 @@ public interface IGBCBuilder extends IBuilder<GridBagConstraints> {
     IGBCBuilder setGrid(EGBCConstant gridX, EGBCConstant gridY);
     IGBCBuilder setGridX(EGBCConstant gridX);
     IGBCBuilder setGridY(EGBCConstant gridY);
-    IGBCBuilder setInsets(Insets insets);
     IGBCBuilder setInsets(int top, int left, int bottom, int right);
     IGBCBuilder setAnchor(EGBCConstant anchor);
     IGBCBuilder setFillType(EGBCConstant fillType);
