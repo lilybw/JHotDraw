@@ -77,6 +77,22 @@ public class PaletteHandler implements ContainerListener,
     }
 
     @Override
+    public void mouseDragged(MouseEvent evt) {
+        if (!toolBar.isEnabled()) {
+            return;
+        }
+        if (!isArmed) {
+            return;
+        }
+        isDragging = true;
+        Point position = evt.getPoint();
+        if (origin == null) {
+            origin = evt.getComponent().getLocationOnScreen();
+        }
+        palette.dragTo(position, origin);
+    }
+
+    @Override
     public void mouseReleased(MouseEvent evt) {
         if (!toolBar.isEnabled()) {
             return;
@@ -92,21 +108,7 @@ public class PaletteHandler implements ContainerListener,
         isDragging = false;
     }
 
-    @Override
-    public void mouseDragged(MouseEvent evt) {
-        if (!toolBar.isEnabled()) {
-            return;
-        }
-        if (!isArmed) {
-            return;
-        }
-        isDragging = true;
-        Point position = evt.getPoint();
-        if (origin == null) {
-            origin = evt.getComponent().getLocationOnScreen();
-        }
-        palette.dragTo(position, origin);
-    }
+
 
     @Override
     public void mouseClicked(MouseEvent evt) {}

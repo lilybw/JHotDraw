@@ -1,7 +1,5 @@
 package org.jhotdraw.gui.plaf.palette;
 
-import org.jhotdraw.gui.plaf.palette.PaletteHandler;
-import org.jhotdraw.gui.plaf.palette.IPaletteToolBarUI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -21,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class PaletteHandlerTest {
 
     @Mock
-    private IPaletteToolBarUI paletteToolBarUI;
+    private IPaletteToolBarUI palette;
 
     @Mock
     private JToolBar toolBar;
@@ -34,13 +32,14 @@ public class PaletteHandlerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        handler = new PaletteHandler(paletteToolBarUI);
+        handler = new PaletteHandler(palette);
         handler.setToolBar(toolBar);
         when(toolBar.getComponents()).thenReturn(new Component[0]); // Return an empty array
         when(toolBar.getLocationOnScreen()).thenReturn(new Point(0,0));
         when(toolBar.getWidth()).thenReturn(10);
         when(toolBar.getHeight()).thenReturn(10);
         when(toolBar.getInsets()).thenReturn(new Insets(0, 0, 0, 0));
+        when(toolBar.isEnabled()).thenReturn(true);
     }
 
     @Test
@@ -50,7 +49,7 @@ public class PaletteHandlerTest {
         handler.componentAdded(evt);
 
         verify(component).addFocusListener(handler);
-        verify(paletteToolBarUI, atLeastOnce()).isRolloverBorders();
+        verify(palette, atLeastOnce()).isRolloverBorders();
     }
 
     @Test
@@ -60,7 +59,7 @@ public class PaletteHandlerTest {
         handler.componentRemoved(evt);
 
         verify(component).removeFocusListener(handler);
-        verify(paletteToolBarUI).setBorderToNormal(component);
+        verify(palette).setBorderToNormal(component);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class PaletteHandlerTest {
 
         handler.focusGained(evt);
 
-        verify(paletteToolBarUI).setFocusedCompIndex(anyInt());
+        verify(palette).setFocusedCompIndex(anyInt());
     }
 
     @Test
@@ -79,7 +78,7 @@ public class PaletteHandlerTest {
 
         handler.mousePressed(evt);
 
-        assertFalse(handler.isArmed());
+        assertTrue(handler.isArmed());
         assertFalse(handler.isDragging());
     }
 
@@ -91,6 +90,55 @@ public class PaletteHandlerTest {
 
         // Verify that orientation change triggers a UI update or any other specific action
         verify(toolBar, atLeastOnce()).updateUI();
+    }
+
+    private MouseEvent getMousePressEvent(){
+        return new MouseEvent(toolBar, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0,
+                0, 0, 1, false);
+    }
+
+    private MouseEvent getMouseDragEvent(){
+        return new MouseEvent(toolBar, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0,
+                0, 0, 1, false);
+    }
+
+    private MouseEvent getMouseReleaseEvent() {
+        return new MouseEvent(toolBar, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0,
+                0, 0, 1, false);
+    }
+
+    @Test
+    void bddDnDMousePressed(){
+        when(toolBar.isEnabled()).thenReturn(true);
+
+        handler.mousePressed(getMousePressEvent());
+
+        assertTrue(handler.isArmed());
+        assertFalse(handler.isDragging());
+    }
+
+    @Test
+    void bddDnDMouseDragged(){
+        when(toolBar.isEnabled()).thenReturn(true);
+        //Arming the Handler
+        handler.mousePressed(getMousePressEvent());
+
+        handler.mouseDragged(getMouseDragEvent());
+        assertTrue(handler.isDragging());
+        verify(palette, times(1)).dragTo(any(Point.class), any(Point.class));
+    }
+
+    @Test
+    void bddDnDMouseReleased(){
+        when(toolBar.isEnabled()).thenReturn(true);
+        //Arming the Handler
+        handler.mousePressed(getMousePressEvent());
+        //Dragging the Palette
+        handler.mouseDragged(getMouseDragEvent());
+
+        handler.mouseReleased(getMouseReleaseEvent());
+        assertFalse(handler.isDragging());
+        verify(palette, times(1)).floatAt(any(Point.class), any(Point.class));
     }
 
 

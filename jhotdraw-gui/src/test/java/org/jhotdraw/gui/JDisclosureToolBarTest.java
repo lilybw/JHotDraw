@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JDisclosureToolBarTest {
@@ -52,5 +55,19 @@ public class JDisclosureToolBarTest {
         assertEquals(2, toolBar.getComponentCount(), "Toolbar should contain two components after state change.");
         assertTrue(toolBar.getComponent(0) instanceof JLabel, "First component should be a JLabel.");
         assertEquals("2", ((JLabel) toolBar.getComponent(0)).getText(), "Label text should match the disclosure state.");
+    }
+
+    @Test
+    void bddShowHide(){
+        //Given I click the collapse button
+        JButton disclosureButton = toolBar.getDisclosureButton();
+        int initialDisclosureState = toolBar.getDisclosureState();
+        //When I'm hovering over a toolbar section
+        for (ActionListener actionListener : disclosureButton.getActionListeners()) {
+            actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        }
+        //Then that section should get minimized
+        int resultingDisclosureState = toolBar.getDisclosureState();
+        assertNotEquals(initialDisclosureState, resultingDisclosureState);
     }
 }

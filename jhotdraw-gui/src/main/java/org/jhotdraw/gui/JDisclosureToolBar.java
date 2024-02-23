@@ -79,6 +79,10 @@ public class JDisclosureToolBar extends JToolBar {
                 .build();
     }
 
+    JButton getDisclosureButton(){
+        return disclosureButton;
+    }
+
     public void setDisclosureStateCount(int newValue) {
         int oldValue = getDisclosureStateCount();
         disclosureButton.putClientProperty(DisclosureIcon.STATE_COUNT_PROPERTY, newValue);
