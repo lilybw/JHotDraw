@@ -35,7 +35,7 @@ public class PaletteHandlerTest {
         handler = new PaletteHandler(palette);
         handler.setToolBar(toolBar);
         when(toolBar.getComponents()).thenReturn(new Component[0]); // Return an empty array
-        when(toolBar.getLocationOnScreen()).thenReturn(new Point(0,0));
+        when(toolBar.getLocationOnScreen()).thenReturn(new Point(0, 0));
         when(toolBar.getWidth()).thenReturn(10);
         when(toolBar.getHeight()).thenReturn(10);
         when(toolBar.getInsets()).thenReturn(new Insets(0, 0, 0, 0));
