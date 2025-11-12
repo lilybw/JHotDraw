@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  * Intended to take away a lot of the manual configuration required, as well as providing
  * quality-of-life improvements like supporting method chaining.
  *
- * @author GustavBW
+ * @author lilybw
  */
 public interface IJButtonBuilder extends IBuilder<JButton> {
     /**

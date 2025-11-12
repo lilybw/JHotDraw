@@ -7,7 +7,7 @@ import java.awt.*;
  * Intended to take away a lot of the manual configuration required, as well as providing
  * quality-of-life improvements like supporting method chaining.
  *
- * @author GustavBW
+ * @author lilybw
  */
 public class GBCBuilder implements IGBCBuilder {
 
